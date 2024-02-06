@@ -1,0 +1,90 @@
+---
+title: "Advanced map visualization"
+subtitle: "Challenge 2"
+author: "YOUR NAME"
+format: 
+  html:
+    self-contained: true
+---
+
+# Instructions
+
+Complete all parts of the Exercises section below to earn a Pass for this challenge.
+
+**Submission:** Click the "Render" button in RStudio to knit a self-contained HTML with all images embedded. Commit and push changes to this file as well as the generated HTML. Push your changes to GitHub by midnight on Monday 2/12. (GitHub classroom automatically creates a pull request for receiving feedback.)
+
+
+
+# Exercises
+
+The US Walkability Index dataset provides relative walkability information for all 2019 census block groups. Through these exercises, we will explore walkability patterns across the United States.
+
+**Part 1:** Download the US Walkability Index dataset [here](https://catalog.data.gov/dataset/walkability-index1) (the Zip file called `WalkabilityIndex.zip`). Unzip this file within a `data` folder within the folder containing this `.qmd`.
+
+Read in the dataset with `st_read()` by providing a relative path to the `WalkabilityIndex` folder (as opposed to a file within that folder). This will take a few seconds. You should see a message `using driver OpenFileGDB` during this process.
+
+```{r reading}
+wi <- st_read(___)
+```
+
+
+**Part 2:** Let's first get a sense for the data by making a map of walkability indices for Minnesota. You will first need to filter the `wi` dataset by using the `STATEFP` variable. `STATEFP` contains the state's [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt) which is `"27"` for Minnesota.
+
+```{r mn_wi_map}
+wi_mn <- ___ # Code for filtering to MN
+    
+# Plot walkability data for MN
+
+```
+
+
+**Part 3:** We will start setting up to do a nationwide exploration of walkability. Use the `us_counties()` function within the `USAboundaries` package to obtain low resolution county boundaries for all US counties in 2023. (Look up the documentation for this function to see how to structure the arguments.)
+
+If needed, transform `all_us_counties` to have the same CRS as the Walkability Index dataset.
+
+```{r get_us_counties}
+all_us_counties <- us_counties(___)
+
+
+```
+
+
+**Part 4:** Use `st_join()` within the `sf` package to insert walkability information into the `all_us_counties` dataset. Because the walkability information is available over regions that are smaller than counties, this join will merge in multiple regions of walkability information for each county.
+
+After the join, summarize the walkability index within each county with the weighted mean and weighted standard deviation, where the weights are given by the `Shape_Area` variable.
+
+*Background information about weighted summary measures:* In an ordinary (unweighted) mean and standard deviation, each observation gets a weight of 1--that is, every observation contributes equally to the calculation. We want to compute a weighted measure because the regions within a county have different areas.
+
+*Techinical implementation:* You can install the `Hmisc` package and use the following:
+
+- `Hmisc::wtd.mean(x, weights)`
+- `Hmisc::wtd.var(x, weights)`
+    - This computes a weighted variance--you'll need to take the square root after this.
+
+In both functions, `x` represents the vector of numerical entries you want to summarize, and `weights` is a vector of the same length as `x` that gives the weight for each entry of `x`.
+
+```{r summary_over_counties}
+# Use st_join to merge county boundaries and regions where we have walkability index data
+all_us_counties_wi <- st_join(___, ___)
+
+# Use Hmisc::wtd.mean() and Hmisc::wtd.var() to compute the weighted mean and SD of the walkability index (weighted by Shape_Area)
+all_us_counties_wi_summ <- 
+```
+
+
+**Part 5:** Pick one state. For this state, make maps that allow you to see average walkability within a county and to see the variability in walkability across a county. (The goal of this part is to get a sense of the county-level walkability data before zooming out to do a nationwide exploration.)
+
+```{r one_state_county_summary}
+# Filter down to one state and make maps
+
+```
+
+
+**Part 6:** Make plots that allow you to explore if there is a relationship between the variability in walkability in a county and the average level of walkability in a county. One plot should depict the United States as a whole, and a second plot should break down this relationship across states. Summarize your findings and what you would be curious to explore next based on your explorations.
+
+```{r sd_vs_mean_us}
+# Plots for the US and by states
+
+```
+
+> Summarize your findings and what you would be curious to explore next based on your explorations.
