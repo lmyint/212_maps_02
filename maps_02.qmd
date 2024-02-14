@@ -13,6 +13,8 @@ Complete all parts of the Exercises section below to earn a Pass for this challe
 
 **Submission:** Click the "Render" button in RStudio to knit a self-contained HTML with all images embedded. Commit and push changes to this file as well as the generated HTML. Push your changes to GitHub by midnight on Monday 2/12. (GitHub classroom automatically creates a pull request for receiving feedback.)
 
+**Important GitHub note:** DO NOT add, commit, and push anything in the `data/` folder. The files for this are too big, and you'll run into file size restrictions.
+
 
 
 # Exercises
@@ -21,14 +23,14 @@ The US Walkability Index dataset provides relative walkability information for a
 
 **Part 1:** Download the US Walkability Index dataset [here](https://catalog.data.gov/dataset/walkability-index1) (the Zip file called `WalkabilityIndex.zip`). Unzip this file within a `data` folder within the folder containing this `.qmd`.
 
-Read in the dataset with `st_read()` by providing a relative path to the `WalkabilityIndex` folder (as opposed to a file within that folder). This will take a few seconds. You should see a message `using driver OpenFileGDB` during this process.
+Read in the dataset with `st_read()` by providing a relative path to the `WalkabilityIndex/Natl_WI.gdb` folder (as opposed to a file within that folder). This will take a few seconds. You should see a message `using driver OpenFileGDB` during this process.
 
 ```{r reading}
 wi <- st_read(___)
 ```
 
 
-**Part 2:** Let's first get a sense for the data by making a map of walkability indices for Minnesota. You will first need to filter the `wi` dataset by using the `STATEFP` variable. `STATEFP` contains the state's [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt) which is `"27"` for Minnesota.
+**Part 2:** Let's first get a sense for the data by making a map of walkability indices for Minnesota. You will first need to filter the `wi` dataset by using the `STATEFP` variable. `STATEFP` contains the state's [FIPS code](https://transition.fcc.gov/oet/info/maps/census/fips/fips.txt) which is `"27"` for Minnesota. The `NatWalkInd` variable contains the walkability indices.
 
 ```{r mn_wi_map}
 wi_mn <- ___ # Code for filtering to MN
@@ -38,7 +40,7 @@ wi_mn <- ___ # Code for filtering to MN
 ```
 
 
-**Part 3:** We will start setting up to do a nationwide exploration of walkability. Use the `us_counties()` function within the `USAboundaries` package to obtain low resolution county boundaries for all US counties in 2023. (Look up the documentation for this function to see how to structure the arguments.)
+**Part 3:** We will start setting up to do a nationwide exploration of walkability. Use the `us_counties()` function within the `USAboundaries` package to obtain the most current low resolution county boundaries for all US counties. (Look up the documentation for this function to see how to structure the arguments.)
 
 If needed, transform `all_us_counties` to have the same CRS as the Walkability Index dataset.
 
@@ -60,6 +62,8 @@ After the join, summarize the walkability index within each county with the weig
 - `Hmisc::wtd.mean(x, weights)`
 - `Hmisc::wtd.var(x, weights)`
     - This computes a weighted variance--you'll need to take the square root after this.
+
+Note: DON'T add `library(Hmisc)` to your package loading code chunk. `Hmisc` contains a function called `summarize()` that will conflict with `dplyr::summarize()`.
 
 In both functions, `x` represents the vector of numerical entries you want to summarize, and `weights` is a vector of the same length as `x` that gives the weight for each entry of `x`.
 
